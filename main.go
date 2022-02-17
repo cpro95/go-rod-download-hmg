@@ -59,6 +59,11 @@ func main() {
 		}
 	}
 
+	if _, err := os.Stat("download"); os.IsNotExist(err) {
+		err := os.Mkdir("download", 0777)
+		check(err)
+	}
+
 	f, err := os.Create("./download/" + pageName + ".html")
 	check(err)
 	defer f.Close()
@@ -69,5 +74,4 @@ func main() {
 	log.Printf("Downloading %s", html[:200])
 
 	time.Sleep(time.Second * 3)
-
 }
