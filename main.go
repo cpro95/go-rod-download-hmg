@@ -69,6 +69,12 @@ func main() {
 	defer f.Close()
 
 	html := content.MustHTML()
+	html = strings.ReplaceAll(html, "FONT-FAMILY: NanumBarunGothic;", "")
+	html = strings.ReplaceAll(html, "rgb(116,116,116)", "rgb(0,0,0)")
+	html = strings.ReplaceAll(html, "rgb(94,94,94)", "rgb(0,0,0)")
+	html = strings.ReplaceAll(html, "FONT-SIZE: 13px;", "FONT-SIZE: 17.92px;")
+	html = strings.ReplaceAll(html, "FONT-SIZE: 15px;", "FONT-SIZE: 17.92px;")
+
 	_, err2 := f.WriteString(html)
 	check(err2)
 	log.Printf("Downloading %s", html[:200])
