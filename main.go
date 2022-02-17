@@ -25,8 +25,14 @@ func lastSlashOfString(imgSrc string) string {
 }
 
 func main() {
-	qUrl := flag.String("q", "https://news.hmgjournal.com/Group-Story/%ED%98%84%EB%8C%80%EC%9E%90%EB%8F%99%EC%B0%A8%EA%B7%B8%EB%A3%B9-JD%ED%8C%8C%EC%9B%8C%EB%A1%9C%EB%B6%80%ED%84%B0-%EA%B8%80%EB%A1%9C%EB%B2%8C-%EC%B5%9C%EA%B3%A0-%EC%88%98%EC%A4%80%EC%9D%98-%ED%92%88%EC%A7%88%EA%B3%BC-%EB%82%B4%EA%B5%AC%EC%84%B1%EC%9D%84-%EC%9E%85%EC%A6%9D-%EB%B0%9B%EB%8B%A4", "URL")
+	qUrl := flag.String("q", "", "-q=input your URL")
+	qImage := flag.Bool("img", false, "-img=false")
 	flag.Parse()
+
+	if *qUrl == "" {
+		log.Println("Please query your URL")
+		return
+	}
 
 	pageName, err := url.QueryUnescape(lastSlashOfString(*qUrl))
 	if err != nil {
@@ -40,14 +46,17 @@ func main() {
 	page.MustWaitLoad()
 
 	content := page.MustElement(".view-cont")
-	images := content.MustElements("img")
 
-	for i, img := range images {
-		log.Printf("Index %d", i)
-		img_src := *img.MustAttribute("src")
-		log.Println(img_src)
-		bin, _ := page.GetResource(img_src)
-		utils.OutputFile("./download/"+lastSlashOfString(img_src), bin)
+	if *qImage == true {
+		images := content.MustElements("img")
+
+		for i, img := range images {
+			log.Printf("Index %d", i)
+			img_src := *img.MustAttribute("src")
+			log.Println(img_src)
+			bin, _ := page.GetResource(img_src)
+			utils.OutputFile("./download/"+lastSlashOfString(img_src), bin)
+		}
 	}
 
 	f, err := os.Create("./download/" + pageName + ".html")
